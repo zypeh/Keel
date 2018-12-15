@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #include "alloc.h"
+#include "parser.h"
 
 int main(int argc, char const *argv[]) {
     if (argc != 2) {
@@ -32,7 +33,15 @@ int main(int argc, char const *argv[]) {
         offset += n;
     }
 
-    printf("%s", content);
+    srcFile src = {
+        .filepath = (uint8_t *) argv[1],
+        .buf = (uint8_t *) content,
+        .len = len
+    };
+
+    srcScanner sc;
+    new_scanner(&sc, &src);
+    while (scan(&sc) != EndOfFile) {};
 
     free(content);
     fclose(fp);
