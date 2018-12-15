@@ -1,6 +1,6 @@
 SOURCES=$(wildcard *.c)
 HEADERS=$(wildcard *.h)
-CFLAGS=-Wall -Wextra -Werror -Wshadow
+CFLAGS=-O3 -Wall -Wextra -Werror -Wshadow -pedantic
 
 keelc: $(SRC) $(HEADERS)
 	clang $(CFLAGS) -o "$@" $(SOURCES)

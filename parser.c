@@ -17,26 +17,63 @@ void next(srcScanner* scanner, int step) {
 }
 
 Token scan(srcScanner* scanner) {
-    /* End of file */
-    if (scanner->pos >= scanner->src->len || scanner->src->buf[scanner->pos] == 0) {
-        return EndOfFile;
-    }
-
     uint8_t* src = scanner->src->buf;
     uint8_t c = src[scanner->pos];
 
+    /* End of file */
+    if (scanner->pos >= scanner->src->len || c == '\0') {
+        return EndOfFile;
+    }
+
     switch (c) {
-        case HASH:
-            printf("<%d, %c>\n", HASH, src[scanner->pos]);
-            scanner->pos++; /* TODO: make it consume and peek next n char */
-            return Hash;
         case LINEFEED:
-            printf("!!!\n");
-            scanner->pos++; /* TODO: make it consume and peek next n char */
+            scanner->line++;
+            scanner->col = 0;
+            next(scanner, 2);
             return Newline;
+
+        case CARRIAGERETURN: /* check \r\n, if not, treat it as whitespace */
+            if (src[scanner->pos + 1] == LINEFEED) {
+                scanner->line++;
+                scanner->col = 0;
+                next(scanner, 2);
+                return Newline;
+            }
+        case SPACE:
+        case TAB:
+        case FORMFEED:
+        case VERTICALTAB:
+            /* Trim whitespaces */
+            next(scanner, 1);
+            while (scanner->pos <= scanner->src->len || src[scanner->pos] != '\0') {
+                if (src[scanner->pos] == SPACE ||
+                    src[scanner->pos] == TAB ||
+                    src[scanner->pos] == FORMFEED ||
+                    src[scanner->pos] == VERTICALTAB ||
+                    (src[scanner->pos] == CARRIAGERETURN &&
+                     src[scanner->pos + 1] != LINEFEED)) {
+                    next(scanner, 1);
+                }
+                break;
+            }
+            return Whitespace;
+
+        case SLASH:
+            if (src[scanner->pos + 1] == SLASH) {
+                next(scanner, 2);
+                while (scanner->pos <= scanner->src->len || src[scanner->pos] != '\0') {
+                    if (src[scanner->pos] == Newline) {
+                        // TODO: saves comment content
+                        break;
+                    }
+                    next(scanner, 1);
+                }
+            }
+            return Comment;
+
         default:
-            printf("<%d, %c>\n", Unknown, src[scanner->pos]); /* TODO: cannot print unicode characters */
-            scanner->pos++; /* TODO: make it consume and peek next n char */
+            putchar(c);
+            next(scanner, 1);
             return Unknown;
     }
 }

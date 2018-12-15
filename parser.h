@@ -44,7 +44,7 @@ typedef enum CharacterCodes {
 
     LINEFEED = 0x0A, // \n
     CARRIAGERETURN = 0x0D, // \r
-
+    SPACE = 0x20,
     UNDERSCORE = 0x5f,
     DOLLARSIGN = 0x24,
 
@@ -89,6 +89,7 @@ typedef enum CharacterCodes {
 typedef enum Token {
     EndOfFile,
     Newline,
+    Whitespace,
 
     Comment,
 
@@ -104,7 +105,6 @@ typedef enum Token {
 
     Identifier,
     Unknown,
-    Hash,
 } Token;
 
 /**
