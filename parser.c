@@ -18,10 +18,11 @@ void next(srcScanner* scanner, int step) {
 
 Token scan(srcScanner* scanner) {
     uint8_t* src = scanner->src->buf;
+    uint32_t len = scanner->src->len;
     uint8_t c = src[scanner->pos];
 
     /* End of file */
-    if (scanner->pos >= scanner->src->len || c == '\0') {
+    if (scanner->pos >= len || c == '\0') {
         return EndOfFile;
     }
 
@@ -29,7 +30,7 @@ Token scan(srcScanner* scanner) {
         case LINEFEED:
             scanner->line++;
             scanner->col = 0;
-            next(scanner, 2);
+            next(scanner, 1);
             return Newline;
 
         case CARRIAGERETURN: /* check \r\n, if not, treat it as whitespace */
@@ -45,7 +46,7 @@ Token scan(srcScanner* scanner) {
         case VERTICALTAB:
             /* Trim whitespaces */
             next(scanner, 1);
-            while (scanner->pos <= scanner->src->len || src[scanner->pos] != '\0') {
+            while (scanner->pos <= len || src[scanner->pos] != '\0') {
                 if (src[scanner->pos] == SPACE ||
                     src[scanner->pos] == TAB ||
                     src[scanner->pos] == FORMFEED ||
@@ -59,20 +60,24 @@ Token scan(srcScanner* scanner) {
             }
             return Whitespace;
 
-        case SLASH:
-            if (src[scanner->pos + 1] == SLASH) {
-                next(scanner, 2);
-                while (scanner->pos <= scanner->src->len || src[scanner->pos] != '\0') {
-                    if (src[scanner->pos] == Newline) {
+        case MINUS:
+            if (src[scanner->pos + 1] == MINUS) {
+                next(scanner, 1);
+                while (scanner->pos <= len && src[scanner->pos] != '\0') {
+                    if (scanner->pos + 1 <= len ||
+                        src[scanner->pos + 1] != Newline ||
+                        src[scanner->pos + 1] != '\0') {
+                        next(scanner, 1);
                         // TODO: saves comment content
+                        // putchar(src[scanner->pos]);
                         break;
                     }
                     next(scanner, 1);
                 }
+                return Comment;
             }
-            return Comment;
-
         default:
+            // putchar(src[scanner->pos]);
             next(scanner, 1);
             return Unknown;
     }
