@@ -41,7 +41,11 @@ int main(int argc, char const *argv[]) {
 
     srcScanner sc;
     new_scanner(&sc, &src);
-    while (scan(&sc) != EndOfFile) {};
+    while (true) {
+        Token t = scan(&sc);
+        if (t == EndOfFile) break;
+        printf("[%d]", t);
+    }
 
     free(content);
     fclose(fp);

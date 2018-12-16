@@ -53,6 +53,7 @@ Token scan(srcScanner* scanner) {
                     (src[scanner->pos] == CARRIAGERETURN &&
                      src[scanner->pos + 1] != LINEFEED)) {
                     next(scanner, 1);
+                    continue;
                 }
                 break;
             }
@@ -72,7 +73,6 @@ Token scan(srcScanner* scanner) {
             return Comment;
 
         default:
-            putchar(c);
             next(scanner, 1);
             return Unknown;
     }
