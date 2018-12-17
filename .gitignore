@@ -1,3 +1,5 @@
 *.~
 .DS_Store
 keelc
+.clang-format
+.vscode/
