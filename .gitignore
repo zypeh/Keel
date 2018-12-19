@@ -3,3 +3,4 @@
 keelc
 .clang-format
 .vscode/
+.flake8
