@@ -112,25 +112,25 @@ typedef enum Token {
  * ----------------------
  * for parsing error messages
  */
-typedef struct tokenRange {
+typedef struct TokenRange {
     uint8_t tokenType;
     uint32_t start;
     uint32_t end;
-} tokenRange;
+} TokenRange;
 
-typedef struct srcFile {
+typedef struct SrcFile {
     uint8_t* filepath;
     uint8_t* buf;
     uint32_t len;
-} srcFile;
+} SrcFile;
 
-typedef struct srcScanner {
-    srcFile* src;
+typedef struct SrcScanner {
+    SrcFile* src;
     uint32_t pos;
     uint32_t line;
     uint32_t col;
-    tokenRange* token;
-} srcScanner;
+    TokenRange* token;
+} SrcScanner;
 
-void new_scanner(srcScanner* scanner, srcFile* source);
-Token scan(srcScanner* scanner);
+void new_scanner(SrcScanner* scanner, SrcFile* source);
+Token scan(SrcScanner* scanner);
