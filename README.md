@@ -1,9 +1,10 @@
 # keel
 
 ### TODO
-[ ] Code Style in doc
-[ ] Project architecture overview
-[ ] Standardise AST (both struct and json format)
+
+* [ ] Code Style in doc
+* [ ] Project architecture overview
+* [ ] Standardise AST (both struct and json format)
 
 ### Code Style
 
