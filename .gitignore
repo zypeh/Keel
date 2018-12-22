@@ -1,6 +1,6 @@
 *.~
 .DS_Store
-keelc
-.clang-format
-.vscode/
-.flake8
+examples/
+
+/target
+**/*.rs.bk
