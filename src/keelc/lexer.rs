@@ -61,6 +61,10 @@ impl Lexer {
                     self.line += 1;
                     self.col = 1;
                 }
+                Token::Whitespace(Whitespace::Tab) => self.col += 4,
+                Token::Comment(s) => self.col += s.len() as u64,
+                Token::StrLit(s) => self.col += s.len() as u64,
+                Token::CharLit(_) => self.col += 1,
                 _ => self.col += 1,
             }
             tokens.push(token);
