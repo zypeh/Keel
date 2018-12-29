@@ -1,23 +1,33 @@
-extern crate keel;
 extern crate clap;
+extern crate keel;
 
-use keel::keelc::parser;
+use std::fs::File;
+use std::io::prelude::*;
+use std::path::Path;
+
 use clap::{App, Arg};
+use keel::keelc::lexer;
 
 fn main() {
     let matches = App::new("keelc")
+        .arg(
+            Arg::with_name("input")
+                .help("the input file to compile")
+                .required(true)
+                .index(1),
+        )
+        .get_matches();
 
-    .arg(Arg::with_name("input")
-        .help("the input file to compile")
-        .required(true)
-        .index(1)
-    )
+    // It's safe to call unwrap() because of the required options we set above
+    let file_path = Path::new(matches.value_of("input").unwrap());
+    let mut file = match File::open(&file_path) {
+        Ok(file) => file,
+        Err(reason) => panic!("could not open {} because {}", file_path.display(), reason)
+    };
 
-    .get_matches();
-
-    if let Some(input_file) = matches.value_of("input") {
-        // It's safe to call unwrap() because of the required options we set above
-        println!("Compiling {}", input_file);
-        parser::hello_scanner();
+    let mut s = String::new();
+    match file.read_to_string(&mut s) {
+        Ok(_) => println!("{:?}", lexer::Lexer::new(s.as_ref()).scan().unwrap()),
+        Err(reason) => panic!(reason),
     }
 }

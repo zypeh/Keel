@@ -6,9 +6,27 @@ use std::str::Chars;
 pub enum Token {
     StrLit(String),
     CharLit(char),
-    Comma,
+    Comment(String),
     Whitespace(Whitespace),
     SemiColon,
+    Colon,
+    Equal,
+    LowerThan,
+    GreaterThan,
+    Plus,
+    Minus,
+    Asterisk,
+    Percent,
+    Period,
+    Comma,
+    OpenParen,
+    CloseParen,
+    OpenBracket,
+    CloseBracket,
+    OpenBrace,
+    CloseBrace,
+    Slash,
+    Backslash,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -53,19 +71,73 @@ impl Lexer {
     fn next_token(&self, chars: &mut Peekable<Chars>) -> Result<Option<Token>, String> {
         match chars.peek() {
             Some(&ch) => match ch {
-                ' ' => {
+                ' ' => self.next(chars, Token::Whitespace(Whitespace::Space)),
+                '\n' => self.next(chars, Token::Whitespace(Whitespace::Newline)),
+                '\t' => self.next(chars, Token::Whitespace(Whitespace::Tab)),
+                '\"' => {
+                    let mut s = String::new();
                     chars.next();
-                    Ok(Some(Token::Whitespace(Whitespace::Space)))
-                }
-                '\t' => {
+                    while let Some(&ch) = chars.peek() {
+                        match ch {
+                            '\"' => {
+                                chars.next();
+                                break;
+                            }
+                            _ => {
+                                chars.next();
+                                s.push(ch);
+                            }
+                        }
+                    }
+                    Ok(Some(Token::StrLit(s)))
+                },
+                '\\' => self.next(chars, Token::Backslash),
+                ';' => self.next(chars, Token::SemiColon),
+                '+' => self.next(chars, Token::Plus),
+                                '-' => {
                     chars.next();
-                    Ok(Some(Token::Whitespace(Whitespace::Tab)))
-                }
-                '\n' => {
-                    chars.next();
-                    Ok(Some(Token::Whitespace(Whitespace::Newline)))
-                }
-            }
+                    if chars.peek() == Some(&'-') {
+                        chars.next();
+                        let mut s = String::new();
+                        while let Some(&ch) = chars.peek() {
+                            match ch {
+                                '\n' => {
+                                    chars.next();
+                                    break;
+                                }
+                                _ => {
+                                    chars.next();
+                                    s.push(ch);
+                                }
+                            }
+                        }
+                        Ok(Some(Token::Comment(s)))
+                    } else {
+                        Ok(Some(Token::Minus))
+                    }
+                },
+                '*' => self.next(chars, Token::Asterisk),
+                '%' => self.next(chars, Token::Percent),
+                '/' => self.next(chars, Token::Slash),
+                '.' => self.next(chars, Token::Period),
+                ',' => self.next(chars, Token::Comma),
+                '(' => self.next(chars, Token::OpenParen),
+                ')' => self.next(chars, Token::CloseParen),
+                '[' => self.next(chars, Token::OpenBracket),
+                ']' => self.next(chars, Token::CloseBracket),
+                '{' => self.next(chars, Token::OpenBrace),
+                '}' => self.next(chars, Token::CloseBrace),
+                '<' => self.next(chars, Token::LowerThan),
+                '>' => self.next(chars, Token::GreaterThan),
+                '=' => self.next(chars, Token::Equal),
+                otherwise => self.next(chars, Token::CharLit(otherwise))
+            },
+            None => Ok(None),
         }
+    }
+
+    fn next(&self, chars: &mut Peekable<Chars>, t: Token) -> Result<Option<Token>, String> {
+        chars.next();
+        Ok(Some(t))
     }
 }
