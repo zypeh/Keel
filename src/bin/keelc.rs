@@ -1,7 +1,7 @@
 extern crate keel;
 extern crate clap;
 
-use keel::keelc;
+use keel::keelc::parser;
 use clap::{App, Arg};
 
 fn main() {
@@ -18,6 +18,6 @@ fn main() {
     if let Some(input_file) = matches.value_of("input") {
         // It's safe to call unwrap() because of the required options we set above
         println!("Compiling {}", input_file);
-        keelc::hello_world();
+        parser::hello_scanner();
     }
 }
