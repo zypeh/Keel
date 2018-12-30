@@ -5,8 +5,9 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 
+use logos::Logos;
 use clap::{App, Arg};
-use keel::keelc::lexer;
+use keel::keelc::fast_lexer::Token;
 
 fn main() {
     let matches = App::new("keelc")
@@ -27,7 +28,14 @@ fn main() {
 
     let mut s = String::new();
     match file.read_to_string(&mut s) {
-        Ok(_) => println!("{:?}", lexer::Lexer::new(s.as_ref()).scan().unwrap()),
+        // Ok(_) => println!("{:?}", lexer::Lexer::new(s.as_ref()).scan().unwrap()),
         Err(reason) => panic!(reason),
+        Ok(_) => {
+            let mut lex = Token::lexer::<&str>(s.as_ref());
+            while lex.token != Token::EndOfFile {
+                println!("{:?} - {:?}", lex.token, lex.slice());
+                lex.advance()
+            }
+        }
     }
 }
