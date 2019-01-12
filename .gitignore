@@ -5,3 +5,5 @@ examples/
 
 /target
 **/*.rs.bk
+
+.stack-work/

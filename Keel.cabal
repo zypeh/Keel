@@ -1,0 +1,32 @@
+name:       Keel
+version:    0.1.0.0
+synopsis:   A functional programming language
+homepage:   https://github.com/zypeh/keel
+license:    MIT
+author:     Zhengyan Peh
+maintainer: Zhengyan Peh (zypeh) <zypeh.geek@gmail.com>
+category:   Language
+
+build-type:         Simple
+license-file:       LICENSE
+cabal-version:      >=1.10
+
+source-repository head
+  type:             git
+  location:         https://github.com/zypeh/keel.git
+
+library
+  default-language: Haskell2010
+  hs-source-dirs:   src/keelc
+  include-dirs:     src/keelc
+  build-depends:    base >= 4.8 && < 5
+  exposed-modules:  Paths_Keel
+                  , Keel.Main
+
+executable keelc
+  main-is:          Main.hs
+  build-depends:    Keel
+                  , base >= 4.8 && < 5
+                  , optparse-applicative >= 0.14 && < 0.15
+  hs-source-dirs:   src/main
+  default-language: Haskell2010
