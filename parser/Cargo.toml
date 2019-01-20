@@ -1,0 +1,8 @@
+[package]
+name = "keel-parser"
+version = "0.1.0"
+authors = ["zypeh <zypeh@gmail.com>"]
+license = "MIT"
+
+[dependencies]
+toolshed = "0.8"
