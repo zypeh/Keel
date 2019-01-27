@@ -5,4 +5,4 @@ authors = ["zypeh <zypeh@gmail.com>"]
 license = "MIT"
 
 [dependencies]
-logos = "0.7"
+logos = { version = "0.10.0-rc1" }

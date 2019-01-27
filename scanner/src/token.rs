@@ -1,10 +1,10 @@
 use logos::Logos;
 
-#[derive(Logos, Debug, PartialEq)]
+#[derive(Logos, Clone, Debug, PartialEq)]
 pub enum Token {
     #[end] EndOfFile,
     #[error] TokenizerError,
-    
+
     #[token = "("] OpenParen,
     #[token = ")"] CloseParen,
     #[token = "["] OpenBracket,
@@ -17,33 +17,28 @@ pub enum Token {
     #[token = "/"] Slash,
     #[token = "\\"] BackSlash,
     #[token = "|"] Pipeline,
-    #[token = "::"] DoubleColon,
     #[token = ";"] SemiColon,
     #[token = "="] Assign,
     #[token = ">"] GreaterThan,
     #[token = "<"] LowerThan,
-    #[token = "=>"] FatArrow,
-    #[token = ">="] GreaterThanEqual,
-    #[token = "<="] LowerThanEqual,
-    #[token = "->"] ArrowRight,
-    #[token = "<-"] ArrowLeft,
+    #[token = ","] Comma,
+    #[token = "."] Period,
     
     #[token = ";"]
     #[token = "\n"]
     Separator,
 
-    #[token = "let"] OpDeclaration,
-    #[token = "if"] OpIf,
-    #[token = "else"] OpElse,
-    #[token = "then"] OpThen,
-    #[token = "match"] OpMatch,
+    #[regex = "[a-zA-Z_$][a-zA-Z0-9_$]*"] Identifier,
+    #[regex = "[0-9]+"]                   IntegerLit,
 
-    #[regex = "[a-zA-Z_$][a-zA-Z0-9_$]*"]
-    Identifier,
+    #[regex = "\"([^\"\\\\]|\\\\.)*\""] StringLit,
+    #[regex = "'([^'\\\\]|\\\\.)'"]     CharLit,
+    #[regex = "--([^\n]|.)*"]           Comment,
 
-    #[regex = "\"([^\"\\\\]|\\\\.)*\""]
-    StringLit,
-
-    #[regex = "--([^\n]|.)*"]
-    Comment,
+    #[token = "let"] KeywordLet,
+    #[token = "data"] KeywordData,
+    #[token = "match"] KeywordMatch,
+    #[token = "with"] KeywordWith,
+    #[regex = "in|case|cocase|of|assert|rewrite|rule|do|->|<-|=>"]
+    ReservedKeyword,
 }
